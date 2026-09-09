@@ -75,3 +75,40 @@ OK: Disk usage is within limits
 OK: Available memory is within limits
 
 **Known limitation / next step:** Currently prints a status line for every metric, healthy or not. A more production-ready version (relevant once we hit L6 automation) would only print output when something is actually flagged, so logs stay quiet unless there's a real problem to see.
+
+## Module L4 — Text Processing
+
+**Status:** Complete — concept, hands-on, exercises, and mini-project all done.
+
+### Topics (all 4 taught + confirmed understood)
+
+- Topic 1 — Searching text with `grep` (literal, case-insensitive, recursive, inverted, basic regex)
+- Topic 2 — Transforming text with `sed` (substitution, preview vs. in-place editing, first-match vs. global `g`)
+- Topic 3 — Structured text: `awk`/`cut` for field extraction, `sort` + `uniq -c` for counting, `wc` for totals
+- Topic 4 — Piping and redirection (`|`, `>` vs `>>`, separating stdout/stderr with `2>`)
+
+### Mini-Project: `log_analyzer.sh`
+
+**Script:** `L4/log_analyzer.sh`
+
+Parses a log file, extracts error lines, counts occurrences by error type, and outputs a summary report.
+
+**Logic:** filter error lines → extract error type → sort → count → report
+
+- Filters lines containing `ERROR_` (covers all error sub-types, e.g. `ERROR_DB`, `ERROR_AUTH`, `ERROR_NETWORK`)
+- Extracts the error-type field (`cut -d " " -f3`)
+- Sorts and counts occurrences per type (`sort | uniq -c`)
+- Writes the summary to `error_report.txt` (overwritten each run — a report reflects the current run's state, not accumulated history)
+
+**Usage:**
+
+```bash
+./L4/log_analyzer.sh
+```
+
+**Example output** (`error_report.txt`):
+2 ERROR_AUTH
+3 ERROR_DB
+1 ERROR_NETWORK
+
+**Known limitation / next step:** The log filename (`app.log`) and report filename (`error_report.txt`) are currently hardcoded inside the script. L5 (positional arguments) will make it possible to pass these in instead of editing the script itself.
